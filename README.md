@@ -1,3 +1,5 @@
+![Andrej Karpathy](assets/Pasted%20image.png)
+
 # SmolGrad
 
 A tiny scalar autograd engine.
