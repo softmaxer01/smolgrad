@@ -1,6 +1,6 @@
 ![Andrej Karpathy](assets/Pasted%20image.png)
 
-# SmolGrad
+# SmolGrad(Inspired by sir Karpathy)
 
 A tiny scalar autograd engine.
 
