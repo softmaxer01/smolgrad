@@ -1,49 +1,41 @@
-import engine as e
+from engine import Value, Layer, MLP
 
-x1 = e.Value(2.0, _label='x1')
-x2 = e.Value(0.0, _label='x2')
-w1 = e.Value(-3.0, _label='w1')
-w2 = e.Value(1.0, _label='w2')
-b = e.Value(6.8813735870, _label='b')
 
-x1w1 = x1 * w1
-x1w1._label = 'x1*w1'
-x2w2 = x2 * w2
-x2w2._label = 'x2*w2'
+n = MLP(8, [16, 8, 4, 1])
 
-x1w1x2w2 = x1w1 + x2w2
-x1w1x2w2._label = 'x1w1+x2w2'
-n = x1w1x2w2 + b
-n._label = 'n'
-o = n.tanh()
-o._label = 'output'
+x_train = [
+    [Value(1.0), Value(2.0), Value(3.0)],
+    [Value(2.0), Value(-1.0), Value(0.5)],
+    [Value(-1.5), Value(2.2), Value(0.0)],
+    [Value(2.0), Value(2.0), Value(-3.0)],
+    [Value(1.0), Value(-2.0), Value(3.0)],
+    [Value(1.5), Value(-1.0), Value(0.5)],
+    [Value(-1.5), Value(1.2), Value(0.0)],
+    [Value(2.2), Value(3.8), Value(-3.0)],
+]
 
-o._grad = 1.0
+y_train = [1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0]
+loss_history=[]
+for i in range(500):
 
-topo = []
-visited = set()
-def build_topo(v):
-    if v not in visited:
-        visited.add(v)
-        for child in v._prev:
-            build_topo(child)
-        topo.append(v)
-build_topo(o)
+    ypred = [n(x) for x in x_train]
+    loss = sum((yout - yt)**2 for yt, yout in zip(y_train, ypred))
+    loss_history.append(loss._data)
 
-for node in reversed(topo):
-    node._backward()
+    for p in n.params():
+        p._grad = 0.0
 
-print("=" * 40)
-print("Output:", o)
-print("Gradients:")
-print(f"o: {o._grad}")
-print(f"n: {n._grad}")
-print(f"x1w1+x2w2: {x1w1x2w2._grad}")
-print(f"b: {b._grad}")
-print(f"x1w1: {x1w1._grad}")
-print(f"x2w2: {x2w2._grad}")
-print(f"x1: {x1._grad}")
-print(f"x2: {x2._grad}")
-print(f"w1: {w1._grad}")
-print(f"w2: {w2._grad}")
-print("="*40)
+    loss.backward()
+
+    for p in n.params():
+        p._data += -0.01 * p._grad
+
+    print(f"Epoch {i}: Loss = {loss._data:.4f}")
+
+y_prd = [n(x) for x in x_train]
+print("Predictions:", [y._data for y in y_prd])
+
+import matplotlib.pyplot as plt
+plt.plot(loss_history)
+plt.savefig("loss graph.png")
+plt.show()
