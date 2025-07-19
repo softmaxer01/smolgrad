@@ -73,9 +73,4 @@ for epoch in range(500):
 ## Example
 
 See `test.py` for a complete example of training an MLP on a simple dataset with loss visualization.
-
-## Say hi to our mascot!
-
-Please save the image of the panda you provided as `panda.jpg` inside the `assets` directory.
-
 ![A cute panda](assets/panda.jpg) 
