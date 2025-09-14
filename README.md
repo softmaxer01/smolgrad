@@ -38,11 +38,9 @@ x1 = e.Value(2.0, _label='x1')
 w1 = e.Value(-3.0, _label='w1')
 b = e.Value(6.8813735870, _label='b')
 
-# Define an expression
 n = x1*w1 + b
 o = n.tanh()
 
-# Automatic backpropagation
 o.backward()
 print(f"Gradient of x1: {x1._grad}")
 ```
@@ -51,7 +49,6 @@ print(f"Gradient of x1: {x1._grad}")
 ```python
 from engine import MLP
 
-# Create a neural network: 3 inputs -> [16, 8, 4, 1] outputs
 n = MLP(3, [16, 8, 4, 1])
 
 # Training loop
